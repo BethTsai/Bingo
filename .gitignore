@@ -8,3 +8,7 @@
 /**/*.xpr
 /**/*.exe
 # /**/*.jpg
+
+/**/*.coe
+!final_number.coe
+!final_circle.coe
