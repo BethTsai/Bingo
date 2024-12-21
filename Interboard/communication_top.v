@@ -6,12 +6,8 @@ module InterboardCommunication_top(
     input wire Ack_in,
     input wire [5:0] inter_data_in,
     input wire ctrl_en,                        // one-pulse signal from GameControl indicating there is data to send
-    input wire ctrl_move_dir,
-    input wire [4:0] ctrl_block_x,
-    input wire [2:0] ctrl_block_y,
-    input wire [3:0] ctrl_msg_type,
-    input wire [5:0] ctrl_card,
-    input wire [2:0] ctrl_sel_len,
+    input wire [4:0] ctrl_number,
+    input wire [2:0] ctrl_msg_type,
     
     output wire inter_ready,
     output wire Request_out,
@@ -19,12 +15,8 @@ module InterboardCommunication_top(
     output wire [5:0] inter_data_out,
     output wire interboard_rst,                // rst called from other board
     output wire interboard_en,                 // should be one-pulse
-    output wire interboard_move_dir,
-    output wire [4:0] interboard_block_x,
-    output wire [2:0] interboard_block_y,
-    output wire [3:0] interboard_msg_type,
-    output wire [5:0] interboard_card,
-    output wire [2:0] interboard_sel_len
+    output wire [4:0] interboard_number,
+    output wire [2:0] interboard_msg_type
 );
 
     // How interboard reset works: 
@@ -80,12 +72,8 @@ module InterboardCommunication_top(
         .interboard_rst(interboard_rst),
         .Ack_in(Ack_in),
         .ctrl_en(ctrl_en),
-        .ctrl_move_dir(ctrl_move_dir),
-        .ctrl_block_x(ctrl_block_x),
-        .ctrl_block_y(ctrl_block_y),
+        .ctrl_number(ctrl_number),
         .ctrl_msg_type(ctrl_msg_type),
-        .ctrl_card(ctrl_card),
-        .ctrl_sel_len(ctrl_sel_len),
 
         .inter_ready(inter_ready),
         .Request_out(request_out_raw),
