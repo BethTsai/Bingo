@@ -6,8 +6,8 @@ module InterboardCommunication_top(
     input wire Ack_in,
     input wire [5:0] inter_data_in,
     input wire ctrl_en,                        // one-pulse signal from GameControl indicating there is data to send
-    input wire [4:0] ctrl_number,
     input wire [2:0] ctrl_msg_type,
+    input wire [4:0] ctrl_number,
     
     output wire inter_ready,
     output wire Request_out,
@@ -15,8 +15,8 @@ module InterboardCommunication_top(
     output wire [5:0] inter_data_out,
     output wire interboard_rst,                // rst called from other board
     output wire interboard_en,                 // should be one-pulse
-    output wire [4:0] interboard_number,
-    output wire [2:0] interboard_msg_type
+    output wire [2:0] interboard_msg_type,
+    output wire [4:0] interboard_number
 );
 
     // How interboard reset works: 
@@ -70,11 +70,16 @@ module InterboardCommunication_top(
         .clk(clk),
         .rst(rst),
         .interboard_rst(interboard_rst),
+        
+        // ack from other board
         .Ack_in(Ack_in),
-        .ctrl_en(ctrl_en),
-        .ctrl_number(ctrl_number),
-        .ctrl_msg_type(ctrl_msg_type),
 
+        // data from Game
+        .ctrl_en(ctrl_en),
+        .ctrl_msg_type(ctrl_msg_type),
+        .ctrl_number(ctrl_number),
+
+        // data to other board
         .inter_ready(inter_ready),
         .Request_out(request_out_raw),
         .inter_data_out(inter_data_out_raw)
@@ -84,17 +89,18 @@ module InterboardCommunication_top(
         .clk(clk),
         .rst(rst),
         .interboard_rst(interboard_rst),
+        
+        // data from other board
         .Request_in(Request_in),
         .inter_data_in(inter_data_in),
         
+        // ack to other board
         .Ack_out(ack_out_raw),
+        
+        // data to Game
         .interboard_en(interboard_en_raw),
-        .interboard_move_dir(interboard_move_dir),
-        .interboard_block_x(interboard_block_x),
-        .interboard_block_y(interboard_block_y),
         .interboard_msg_type(interboard_msg_type),
-        .interboard_card(interboard_card),
-        .interboard_sel_len(interboard_sel_len)
+        .interboard_number(interboard_number)
     );
 
     // wire request_in, request_out;
