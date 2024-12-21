@@ -69,10 +69,10 @@ module InterboardCommunication_top(
 
     // Handle reset called by other board
     assign interboard_rst = ({Ack_in, Request_in, inter_data_in} == 8'hff);
-    assign inter_data_out = rst_other ? 6'b11_1111 : (transmit ? inter_data_out_raw : 6'b0);
-    assign Ack_out = rst_other ? 1'b1 : (transmit ? ack_out_raw : 1'b0);
-    assign Request_out = rst_other ?  1'b1 : (transmit ? request_out_raw : 1'b0);
-    assign interboard_en = transmit ? 1'b0 : interboard_en_raw;
+    assign inter_data_out = rst_other ? 6'hff : (transmit ? inter_data_out_raw : 6'b0);
+    assign Ack_out =        rst_other ? 1'b1  : (transmit ? 1'b0 : ack_out_raw);
+    assign Request_out =    rst_other ? 1'b1  : (transmit ? request_out_raw : 1'b0);
+    assign interboard_en =  transmit  ? 1'b0  : interboard_en_raw;
 
     send_all sa (
         .clk(clk),
@@ -128,7 +128,7 @@ module InterboardCommunication_top(
     // assign request_in = Request;            // request_in = transmit ? 1'bz : Request;
     // assign data_in = interboard_data;       // data_in = transmit ? 6'bz : interboard_data;
 
-    // ila_1 ila_inst(clk, transmit, Ack, interboard_data, Request, ack_in, request_in, ack_out, request_out);
+    ila_0 ila_inst(clk, Request_in, Ack_out, ra.cur_state, ra.sr.cur_state);
 
 endmodule
 

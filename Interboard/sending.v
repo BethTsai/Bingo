@@ -140,7 +140,7 @@ module send_all(
         .inter_data_out(inter_data_out)
     );
 
-    ila_0 ila_inst(clk, cur_state, ctrl_en, en_send, stored_msg_type, single_send_inst.cur_state, Request_out, Ack_in, inter_data_out, bottom_done);
+    // ila_0 ila_inst(clk, cur_state, ctrl_en, en_send, stored_msg_type, single_send_inst.cur_state, Request_out, Ack_in, inter_data_out, bottom_done);
 
 endmodule
 
