@@ -128,7 +128,7 @@ module InterboardCommunication_top(
     // assign request_in = Request;            // request_in = transmit ? 1'bz : Request;
     // assign data_in = interboard_data;       // data_in = transmit ? 6'bz : interboard_data;
 
-    ila_0 ila_inst(clk, Request_in, Ack_out, ra.cur_state, ra.sr.cur_state);
+    // ila_0 ila_inst(clk, Request_in, Ack_out, ra.cur_state, ra.sr.cur_state);
 
 endmodule
 
