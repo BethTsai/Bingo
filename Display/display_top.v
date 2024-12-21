@@ -2,8 +2,8 @@ module Display_top (
 	input wire clk,
     input wire rst,
     input wire interboard_rst,
-	input wire [7:0] keyboard_nums,
-    input wire [5*5-1:0] map,	// 8*18 positions with 54 different types of cards
+	input wire [7:0] display_nums,
+    input wire [5*5-1:0] map,	
 
 	inout PS2_CLK,
 	inout PS2_DATA,
