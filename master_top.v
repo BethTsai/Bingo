@@ -54,6 +54,7 @@ module Master_top (
     Keyboard_Handler Keyboard_Handler_inst0 (
         .clk(clk),
         .rst(rst),
+		.interboard_rst(interboard_rst),
         .PS2_DATA(PS2_DATA),
         .PS2_CLK(PS2_CLK),
         .display_num(cur_number_BCD),

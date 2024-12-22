@@ -1,6 +1,7 @@
 module Keyboard_Handler(
 	input wire clk,
 	input wire rst,
+	input wire interboard_rst,
 	inout wire PS2_DATA,
 	inout wire PS2_CLK,
 
@@ -10,6 +11,8 @@ module Keyboard_Handler(
 	wire key_valid;
 	wire [8:0] last_change;
 	wire [511:0] key_down;
+	wire all_rst;
+	assign all_rst = rst | interboard_rst;
 	KeyboardDecoder KeyboardDecoder_inst0 (
 		.key_down(key_down),
 		.last_change(last_change),
@@ -71,7 +74,7 @@ module Keyboard_Handler(
 		end
 	end
 	always @ (posedge clk, posedge rst) begin
-		if (rst) begin
+		if (all_rst) begin
 			one_pressed <= 9'b0;
 			prev_pressed <= 9'b0;
 			display_num <= 8'b0;
