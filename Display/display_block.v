@@ -18,7 +18,7 @@ module display_window(
 
 	reg [0:1024-1] mem [0:24];
 	initial begin
-		$readmemb("nums.txt", mem);
+		$readmemb("nums.dat", mem);
 	end
 
 	assign block_value = map[5*(block_x + block_y * 5) +: 5];
