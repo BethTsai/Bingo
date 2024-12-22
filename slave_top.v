@@ -21,7 +21,8 @@ module Slave_top (
     output wire vsync,
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
-    output wire [3:0] vgaBlue
+    output wire [3:0] vgaBlue,
+    output wire [15:0] LED
 );
 
     wire start_game;
@@ -150,5 +151,7 @@ module Slave_top (
 	// 	Game_Slave_inst0.handle_guess_inst.cur_state // 2
     // );
 
+    assign LED[3:0] = Game_Slave_inst0.cur_state;
+    assign LED[7:4] = Game_Slave_inst0.handle_guess_inst.cur_state;
 
 endmodule
