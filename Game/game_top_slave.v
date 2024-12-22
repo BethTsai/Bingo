@@ -22,17 +22,17 @@ module Game_Slave(
     output wire [25-1:0] circle
 );
 
-    localparam IDLE = 1;
-    localparam WAIT_P1_SEL = 2;
-    localparam P2_SEL = 3;
-    localparam SEND_START = 4;
-    localparam WAIT_P1_GUESS = 5;
-    localparam WAIT_UPDATE_GUESS = 6;
-    localparam P2_GUESS = 7;
-    localparam SEND_WIN = 8;
-    localparam P2_CHECK_WIN = 9;
-    localparam SEND_SEL = 10;
-    localparam FIN = 1;
+    localparam IDLE = 0;
+    localparam WAIT_P1_SEL = 1;
+    localparam P2_SEL = 2;
+    localparam SEND_START = 3;
+    localparam WAIT_P1_GUESS = 4;
+    localparam WAIT_UPDATE_GUESS = 5;
+    localparam P2_GUESS = 6;
+    localparam SEND_WIN = 7;
+    localparam P2_CHECK_WIN = 8;
+    localparam SEND_SEL = 9;
+    localparam FIN = 10;
 
     reg [3:0] cur_state, next_state;
     wire [4:0] cur_number = 10*cur_number_BCD[7:4] + cur_number_BCD[3:0];

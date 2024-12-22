@@ -30,12 +30,11 @@ module Game_Master(
     localparam WAIT_P2_SEL = 3;
     localparam P1_GUESS = 4;
     localparam P1_CHECK_WIN = 5;
-    localparam SEND_GUESS = 6;
-    localparam WAIT_P2_GUESS = 7;
-    localparam SEND_I_WIN = 8;
-    localparam SEND_SEL = 9;
-    localparam WAIT_UPDATE_GUESS = 10;
-    localparam FIN = 11;
+    localparam WAIT_P2_GUESS = 6;
+    localparam SEND_I_WIN = 7;
+    localparam SEND_SEL = 8;
+    localparam WAIT_UPDATE_GUESS = 9;
+    localparam FIN = 10;
 
     reg [3:0] cur_state, next_state;
     // reg [24:0] used_number, used_number_next;
@@ -219,6 +218,9 @@ module Game_Master(
         .rst(rst),
         .interboard_rst(interboard_rst),
 
+        .interboard_en(interboard_en),
+        .interboard_msg_type(interboard_msg_type),
+        .interboard_number(interboard_number),
         .cur_game_state(cur_state),
         .clear_guess(clear_guess),
         .start_guess(start_guess),

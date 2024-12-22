@@ -121,6 +121,24 @@ module Master_top (
         .interboard_msg_type(interboard_msg_type),
         .interboard_number(interboard_number)
     );
+
+    ila_0 ila_inst(
+        clk,
+        ctrl_en, // 1
+        ctrl_msg_type, // 3
+        ctrl_number, // 5
+        interboard_en, // 1
+        interboard_msg_type, // 3
+        interboard_number, // 5
+        Game_Master_inst0.cur_state, // 4
+        Game_Master_inst0.cur_number, // 5
+        Game_Master_inst0.start_sel, // 1
+        Game_Master_inst0.start_guess, // 1
+        Game_Master_inst0.clear_guess, // 1
+        Game_Master_inst0.guess_done, // 1
+        Game_Master_inst0.sel_done, // 1
+        Game_Master_inst0.i_win // 1
+    );
     
 
 
