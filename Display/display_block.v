@@ -16,14 +16,15 @@ module display_window(
 	wire [4:0] block_value;
 	wire [4:0] pixel_addr;
 
-	reg [0:1024-1] mem [0:24];
-	initial begin
-		$readmemb("nums.dat", mem);
-	end
+	// reg [0:1024-1] mem [0:24];
+	// initial begin
+	// 	$readmemb("nums.dat", mem);
+	// end
+	blk_mem_gen_2 blk_mem_gen_2_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_nums));
 
 	assign block_value = map[5*(block_x + block_y * 5) +: 5];
 	assign pixel_addr = (block_value > 0 && block_value <= 25) ? block_value-1 : 0;
-	assign pixel_nums = mem[pixel_addr];
+
 	always @(*) begin
 		if(pixel_x < 2 || pixel_x >= 62)begin
 			pixel_window = FRAME;

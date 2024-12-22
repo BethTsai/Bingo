@@ -15,8 +15,12 @@ module Display_top (
     output wire [6:0] DISPLAY,
     output wire [3:0] DIGIT
 );
+	localparam circle_mem = 1024'b0000000000000000000000000000000000000000000000000000000000000000000000000000111111111000000000000000000001111111111111100000000000000000111100000000011110000000000000011100000000000001110000000000001110000000000000001110000000000111000000000000000001110000000011100000000000000000001110000001110000000000000000000001100000011000000000000000000000001100000110000000000000000000000011000011000000000000000000000000111000110000000000000000000000000110001100000000000000000000000001100011000000000000000000000000011000110000000000000000000000000110001100000000000000000000000001100011000000000000000000000000011000110000000000000000000000000110001100000000000000000000000011100001100000000000000000000000110000011000000000000000000000001100000011000000000000000000000110000000111000000000000000000011100000000111000000000000000001110000000000111000000000000000111000000000000111000000000000011100000000000000111110000000111110000000000000000011111111111110000000000000000000001111111110000000000000000000000000000000000000000000;
+
 	localparam FRAME = 12'h732;
 	localparam CIRCLE_COLOR = 12'hc22;
+
+
 	wire clk_25MHz;
     clock_divider #(.n(2)) m2 (.clk(clk), .clk_div(clk_25MHz));
 
@@ -30,6 +34,13 @@ module Display_top (
 	reg [16:0] pixel_addr;
 	wire [11:0] dina;
 	wire draw_window, draw_circle, draw_line, draw_nums, draw_outer_frame;
+	
+	// reg [0:1024-1] mem2 [0:1];
+	// initial begin
+	// 	$readmemb("circle.dat", mem2);
+	// end
+	// assign pixel_circle = mem2[0];
+	// assign pixel_circle = circle_mem;
 	
 	wire [3:0] one_num;
 	wire [15:0] nums;
@@ -68,23 +79,22 @@ module Display_top (
 		.display(DISPLAY),
 		.digit(DIGIT)
 	);
-	reg [0:1024-1] mem [0:1];
-	initial begin
-		$readmemb("circle.dat", mem);
-	end
-	assign pixel_circle = mem[0];
+	
 	// Store bricks_wall
 	blk_mem_gen_0 blk_mem_gen_0_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_bricks));
 	// Store window
 	blk_mem_gen_1 blk_mem_gen_1_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_window));
-
+	// Store Circle
+	blk_mem_gen_3 blk_mem_gen_3_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(0), .douta(pixel_circle));
+	
 	assign draw_window = (h_cnt >= 160 && h_cnt < 480) && (v_cnt >= 80 && v_cnt < 400);
 	assign draw_outer_frame = (((h_cnt >= 158 && h_cnt < 160) || (h_cnt >= 480 && h_cnt < 482)) && (v_cnt >= 78 && v_cnt < 402)) ||
 								(((v_cnt >= 78 && v_cnt < 80) || (v_cnt >= 400 && v_cnt < 402)) && (h_cnt >= 158 && h_cnt < 482));
 	assign draw_circle = circle[block_x + block_y * 5];
+	
 	always @(*) begin
 		if(draw_window) begin
-			pixel_addr = (h_cnt - 160) + (v_cnt - 80) * 320;
+			pixel_addr = ((h_cnt - 160) >> 1) + ((v_cnt - 80) >> 1) * 160;
 		end 
 		else begin
 			pixel_addr = (v_cnt%120)*160 + h_cnt%160;

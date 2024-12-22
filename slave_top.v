@@ -121,33 +121,34 @@ module Slave_top (
         .interboard_number(interboard_number)
     );
     
-    ila_0 ila_inst(
-        clk,
-        ctrl_en, // 1
-        ctrl_msg_type, // 3
-        ctrl_number, // 5
-        interboard_en, // 1
-        interboard_msg_type, // 3
-        interboard_number, // 5
-        Game_Slave_inst0.cur_state, // 4
-        Game_Slave_inst0.cur_number, // 5
-        Game_Slave_inst0.start_sel, // 1
-        Game_Slave_inst0.start_guess, // 1
-        Game_Slave_inst0.clear_guess, // 1
-        Game_Slave_inst0.guess_done, // 1
-        Game_Slave_inst0.sel_done, // 1
-        Game_Slave_inst0.i_win, // 1
-        Game_Slave_inst0.enter_pulse, // 1
-        Game_Slave_inst0.handle_select_inst.used_number, // 25
-        Game_Slave_inst0.handle_select_inst.cur_pos, // 5
-        transmit, // 1
-        Request_out, // 1
-        Ack_out, // 1
-        inter_data_out, // 6
-        Request_in, // 1
-        Ack_in, // 1
-        inter_data_in // 6
-    );
+    // ila_1 ila_inst(
+    //     clk,
+    //     // ctrl_en, // 1
+    //     // ctrl_msg_type, // 3
+    //     // ctrl_number, // 5
+    //     interboard_en, // 1
+    //     interboard_msg_type, // 3
+    //     interboard_number, // 5
+    //     Game_Slave_inst0.cur_state, // 4
+    //     // Game_Slave_inst0.cur_number, // 5
+    //     Game_Slave_inst0.start_sel, // 1
+    //     Game_Slave_inst0.start_guess, // 1
+    //     // Game_Slave_inst0.clear_guess, // 1
+    //     Game_Slave_inst0.guess_done, // 1
+    //     Game_Slave_inst0.sel_done, // 1
+    //     // Game_Slave_inst0.i_win, // 1
+    //     // Game_Slave_inst0.enter_pulse, // 1
+    //     // Game_Slave_inst0.handle_select_inst.used_number, // 25
+    //     // Game_Slave_inst0.handle_select_inst.cur_pos, // 5
+    //     // transmit, // 1
+    //     // Request_out, // 1
+    //     // Ack_out, // 1
+    //     // inter_data_out, // 6
+    //     // Request_in, // 1
+    //     // Ack_in, // 1
+    //     // inter_data_in, // 6
+	// 	Game_Slave_inst0.handle_guess_inst.cur_state // 2
+    // );
 
 
 endmodule
