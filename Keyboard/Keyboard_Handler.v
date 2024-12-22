@@ -73,7 +73,7 @@ module Keyboard_Handler(
 			enter_pulse = 1;
 		end
 	end
-	always @ (posedge clk, posedge rst) begin
+	always @ (posedge clk) begin
 		if (all_rst) begin
 			one_pressed <= 9'b0;
 			prev_pressed <= 9'b0;

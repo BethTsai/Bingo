@@ -71,8 +71,8 @@ module handle_select(
         else if(cur_state == SEL && enter_pulse && 1 <= cur_number && cur_number <= 25 && used_number[cur_number-1] == 0) begin
             used_number_next[cur_number-1] = 1;
             next_pos = cur_pos+1;
-            map_next[cur_pos*5-1 -: 5] = cur_number;
-            num_to_pos_next[cur_number*5 -: 5] = cur_pos;
+            map_next[cur_pos*5 +: 5] = cur_number;
+            num_to_pos_next[cur_number*5-1 -: 5] = cur_pos;
         end
     end
 

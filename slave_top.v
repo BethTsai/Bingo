@@ -136,7 +136,10 @@ module Slave_top (
         Game_Slave_inst0.clear_guess, // 1
         Game_Slave_inst0.guess_done, // 1
         Game_Slave_inst0.sel_done, // 1
-        Game_Slave_inst0.i_win // 1
+        Game_Slave_inst0.i_win, // 1
+        Game_Slave_inst0.enter_pulse, // 1
+        Game_Slave_inst0.handle_select_inst.used_number, // 25
+        Game_Slave_inst0.handle_select_inst.cur_pos // 5
     );
 
 
