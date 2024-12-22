@@ -1,0 +1,223 @@
+`include "../message_macro.v"
+
+module Gmae_Slave(
+    input wire clk,
+    input wire rst, 
+    input wire interboard_rst, 
+
+    input wire [7:0] cur_number_BCD,
+    input wire enter_pulse,
+
+    input wire inter_ready,
+    input wire interboard_en,
+    input wire [2:0] interboard_msg_type,
+    input wire [4:0] interboard_number,
+
+    output reg transmit,
+    output reg ctrl_en,
+    output reg [2:0] ctrl_msg_type,
+    output reg [4:0] ctrl_number,
+
+    output wire [5*25-1:0] map,
+    output wire [25-1:0] circle
+);
+
+    localparam IDLE = 1;
+    localparam WAIT_P1_SEL = 2;
+    localparam P2_SEL = 3;
+    localparam SEND_START = 4;
+    localparam WAIT_P1_GUESS = 5;
+    localparam WAIT_UPDATE_GUESS = 6;
+    localparam P2_GUESS = 7;
+    localparam SEND_WIN = 8;
+    localparam P2_CHECK_WIN = 9;
+    localparam SEND_SEL = 10;
+    localparam FIN = 1;
+
+    reg [3:0] cur_state, next_state;
+    wire [4:0] cur_number = 10*cur_number_BCD[7:4] + cur_number_BCD[3:0];
+
+    reg start_sel;
+    reg start_guess;
+    reg clear_guess;
+
+    // output of handle_select
+    wire sel_done;
+    wire [5*25-1:0] num_to_pos;
+
+    // output of handle_guess
+    wire guess_done;
+
+    // output of check_win
+    wire i_win;
+
+    always @(posedge clk) begin
+        if(rst || interboard_rst) begin
+            cur_state <= IDLE;
+        end
+        else begin
+            cur_state <= next_state;
+        end
+    end
+
+    always @(*) begin
+        next_state = cur_state;
+        if(cur_state == IDLE && interboard_en && interboard_msg_type == `STATE_TURN) begin
+            next_state = WAIT_P1_SEL;
+        end
+        else if(cur_state == WAIT_P1_SEL && interboard_en && interboard_msg_type == `STATE_TURN) begin
+            next_state = P2_SEL;
+        end
+        else if(cur_state == P2_SEL && sel_done) begin
+            next_state = SEND_START;
+        end
+        else if(cur_state == SEND_START && inter_ready) begin
+            next_state = WAIT_P1_GUESS;
+        end
+        else if(cur_state == WAIT_P1_GUESS) begin
+            if(interboard_en && interboard_msg_type == `SEL_NUM) begin
+                next_state = WAIT_UPDATE_GUESS;
+            end
+            else if(interboard_en && interboard_msg_type == `STATE_WIN) begin
+                next_state = FIN;
+            end
+        end
+        else if(cur_state == WAIT_UPDATE_GUESS && guess_done) begin
+            next_state = P2_GUESS;
+        end
+        else if(cur_state == P2_GUESS) begin
+            if(guess_done) begin
+                next_state = P2_CHECK_WIN;
+            end
+            else if(i_win) begin
+                next_state = SEND_WIN;
+            end
+        end
+        else if(cur_state == P2_CHECK_WIN) begin
+            if(i_win) begin
+                next_state = SEND_WIN;
+            end
+            else begin
+                next_state = SEND_SEL;
+            end
+        end
+        else if(cur_state == SEND_SEL && inter_ready) begin
+            next_state = WAIT_P1_GUESS;
+        end
+        else if(cur_state == SEND_WIN && inter_ready) begin
+            next_state = FIN;
+        end
+        else if(cur_state == FIN && interboard_en && interboard_msg_type == `STATE_TURN) begin
+            next_state = IDLE;
+        end
+    end
+
+    always@* begin
+        if(cur_state == P2_SEL && sel_done) begin
+            ctrl_en = 1;
+        end
+        else if(cur_state == P2_GUESS && i_win) begin
+            ctrl_en = 1;
+        end
+        else if(cur_state == P2_CHECK_WIN) begin
+            ctrl_en = 1;
+        end
+        else begin
+            ctrl_en = 0;
+        end
+    end
+
+    always@* begin
+        if(cur_state == WAIT_P1_SEL && interboard_en && interboard_msg_type == `STATE_TURN) begin
+            start_sel = 1;
+        end 
+        else begin
+            start_sel = 0;
+        end
+    end
+
+    always@* begin
+        if(cur_state == FIN && interboard_en && interboard_msg_type == `STATE_TURN) begin
+            clear_guess = 1;
+        end
+        else begin
+            clear_guess = 0;
+        end
+    end
+
+    always@* begin
+        if(cur_state == SEND_START && inter_ready) begin
+            start_guess = 1;
+        end
+        else if(cur_state == WAIT_UPDATE_GUESS && guess_done) begin
+            start_guess = 1;
+        end
+        else if(cur_state == SEND_SEL && inter_ready) begin
+            start_guess = 1;
+        end
+        else begin
+            start_guess = 0;
+        end
+    end
+
+    always@* begin
+        ctrl_number = cur_number;
+    end
+
+    always@* begin
+        case(cur_state) 
+            P2_SEL: ctrl_msg_type = `STATE_TURN;
+            P2_GUESS: ctrl_msg_type = `STATE_WIN;
+            P2_CHECK_WIN: ctrl_msg_type = i_win ? `STATE_WIN : `SEL_NUM;
+            default: ctrl_msg_type = 3'hf;
+        endcase
+    end
+
+    always@* begin
+        case(cur_state) 
+            P2_SEL: transmit = 1;
+            SEND_START: transmit = 1;
+            P2_GUESS: transmit = 1;
+            P2_CHECK_WIN: transmit = 1;
+            SEND_WIN: transmit = 1;
+            SEND_SEL: transmit = 1;
+            default: transmit = 0;
+        endcase
+    end
+
+    handle_select handle_select_inst(
+        .clk(clk),
+        .rst(rst),
+        .interboard_rst(interboard_rst),
+
+        .start_sel(start_sel),
+        .cur_number_BCD(cur_number_BCD),
+        .enter_pulse(enter_pulse),
+
+        .sel_done(sel_done),
+        .map(map),
+        .num_to_pos(num_to_pos)
+    );
+
+    handle_guess_slave handle_guess_inst(
+        .clk(clk),
+        .rst(rst),
+        .interboard_rst(interboard_rst),
+
+        .cur_game_state(cur_state),
+        .clear_guess(clear_guess),
+        .start_guess(start_guess),
+        .cur_number_BCD(cur_number_BCD),
+        .enter_pulse(enter_pulse),
+        .num_to_pos(num_to_pos),
+
+        .guess_done(guess_done),
+        .circles(circle)
+    );
+
+    check_win check_win_inst(
+        .circle(circle),
+        .i_win(i_win)
+    );
+
+endmodule
