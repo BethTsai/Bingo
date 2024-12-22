@@ -20,9 +20,7 @@ module display_window(
 	initial begin
 		$readmemb("nums.txt", mem);
 	end
-	// Store 25 numbers
-	// blk_mem_gen_2 blk_mem_gen_2_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_nums));
-	
+
 	assign block_value = map[5*(block_x + block_y * 5) +: 5];
 	assign pixel_addr = (block_value > 0 && block_value <= 25) ? block_value-1 : 0;
 	assign pixel_nums = mem[pixel_addr];

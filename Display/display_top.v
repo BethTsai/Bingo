@@ -77,8 +77,6 @@ module Display_top (
 	blk_mem_gen_0 blk_mem_gen_0_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_bricks));
 	// Store window
 	blk_mem_gen_1 blk_mem_gen_1_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_window));
-	// Store circles
-	// blk_mem_gen_3 blk_mem_gen_3_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(0), .douta(pixel_circle));
 
 	assign draw_window = (h_cnt >= 160 && h_cnt < 480) && (v_cnt >= 80 && v_cnt < 400);
 	assign draw_outer_frame = (((h_cnt >= 158 && h_cnt < 160) || (h_cnt >= 480 && h_cnt < 482)) && (v_cnt >= 78 && v_cnt < 402)) ||
@@ -86,12 +84,11 @@ module Display_top (
 	assign draw_circle = circle[block_x + block_y * 5];
 	always @(*) begin
 		if(draw_window) begin
-			pixel_addr = ((h_cnt - 160) >> 1) + ((v_cnt - 80) >> 1 )* 160;
+			pixel_addr = (h_cnt - 160) + (v_cnt - 80) * 320;
 		end 
 		else begin
 			pixel_addr = (v_cnt%120)*160 + h_cnt%160;
 		end
-		// pixel_addr_0 = (v_cnt%120)*160 + h_cnt%160;
 	end
 	always @(*) begin
 		// if(draw_line) begin
