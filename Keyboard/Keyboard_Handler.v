@@ -19,7 +19,7 @@ module Keyboard_Handler(
 		.key_valid(key_valid),
 		.PS2_DATA(PS2_DATA),
 		.PS2_CLK(PS2_CLK),
-		.rst(rst),
+		.rst(all_rst),
 		.clk(clk)
 	);
 
