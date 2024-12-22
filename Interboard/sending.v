@@ -4,12 +4,8 @@ module send_all(
     input wire interboard_rst,          // reset called by other board
     input wire Ack_in,
     input wire ctrl_en,                 // one-pulse signal from GameControl indicating there is data to send
-    input wire [3:0] ctrl_msg_type,
-    input wire [4:0] ctrl_block_x,
-    input wire [2:0] ctrl_block_y,
-    input wire [5:0] ctrl_card,
-    input wire [2:0] ctrl_sel_len,
-    input wire ctrl_move_dir,
+    input wire [2:0] ctrl_msg_type,
+    input wire [4:0] ctrl_number,
     
     output wire inter_ready,
     output wire Request_out,
@@ -19,11 +15,7 @@ module send_all(
     // Transmission state
     localparam INIT = 0;
     localparam STEP_1 = 1; // msg_type
-    localparam STEP_2 = 2; // block_x 
-    localparam STEP_3 = 3; // block_y
-    localparam STEP_4 = 4; // card
-    localparam STEP_5 = 5; // sel_len
-    localparam STEP_6 = 6; // move_dir
+    localparam STEP_2 = 2; // number
 
 
     reg [2:0] cur_state, next_state;
@@ -35,12 +27,7 @@ module send_all(
     reg [5:0] data_to_bottom;
 
     reg [3:0] stored_msg_type, stored_msg_type_next;
-    reg [4:0] stored_block_x, stored_block_x_next;
-    reg [2:0] stored_block_y, stored_block_y_next;
-    reg [5:0] stored_card, stored_card_next;
-    reg [2:0] stored_sel_len, stored_sel_len_next;
-    reg stored_move_dir, stored_move_dir_next;
-
+    reg [4:0] stored_number, stored_number_next;
 
     always@(posedge clk) begin
         if(rst || interboard_rst) begin
@@ -48,24 +35,18 @@ module send_all(
             en_send <= 0;
             
             stored_msg_type <= 0;
-            stored_block_x <= 0;
-            stored_block_y <= 0;
-            stored_card <= 0;
-            stored_sel_len <= 0;
-            stored_move_dir <= 0;
+            stored_number <= 0;
         end
         else begin
             cur_state <= next_state;
             en_send <= en_send_next;
 
             stored_msg_type <= stored_msg_type_next;
-            stored_block_x <= stored_block_x_next;
-            stored_block_y <= stored_block_y_next;
-            stored_card <= stored_card_next;
-            stored_sel_len <= stored_sel_len_next;
-            stored_move_dir <= stored_move_dir_next;
+            stored_number <= stored_number_next;
         end
     end
+
+    assign inter_ready = (cur_state == INIT);
 
     // en_send will be true at the first cycle of each transmission
     always@* begin
@@ -73,7 +54,7 @@ module send_all(
        if(cur_state == INIT && ctrl_en) begin
            en_send_next = 1;
        end
-       else if(bottom_done && cur_state != STEP_6) begin
+       else if(bottom_done && cur_state != STEP_2) begin
            en_send_next = 1;
        end
     end
@@ -86,11 +67,7 @@ module send_all(
         else if (bottom_done) begin
             case (cur_state)
                 STEP_1:  next_state = STEP_2;
-                STEP_2:  next_state = STEP_3;
-                STEP_3:  next_state = STEP_4;
-                STEP_4:  next_state = STEP_5;
-                STEP_5:  next_state = STEP_6;
-                STEP_6:  next_state = INIT;
+                STEP_2:  next_state = INIT;
                 default: next_state = cur_state;
             endcase
         end
@@ -99,11 +76,7 @@ module send_all(
     always@* begin
         case (cur_state) 
             STEP_1: data_to_bottom = stored_msg_type;
-            STEP_2: data_to_bottom = stored_block_x;
-            STEP_3: data_to_bottom = stored_block_y;
-            STEP_4: data_to_bottom = stored_card;
-            STEP_5: data_to_bottom = stored_sel_len;
-            STEP_6: data_to_bottom = stored_move_dir;
+            STEP_2: data_to_bottom = stored_number;
             default: data_to_bottom = 0;
         endcase
     end
@@ -111,18 +84,10 @@ module send_all(
     // stored data will present one cycle later then ctrl_en 
     always@* begin
         stored_msg_type_next = stored_msg_type;
-        stored_block_x_next = stored_block_x;
-        stored_block_y_next = stored_block_y;
-        stored_card_next = stored_card;
-        stored_sel_len_next = stored_sel_len;
-        stored_move_dir_next = stored_move_dir;
+        stored_number_next = stored_number;
         if(cur_state == INIT && ctrl_en) begin
             stored_msg_type_next = ctrl_msg_type;
-            stored_block_x_next = ctrl_block_x;
-            stored_block_y_next = ctrl_block_y;
-            stored_card_next = ctrl_card;
-            stored_sel_len_next = ctrl_sel_len;
-            stored_move_dir_next = ctrl_move_dir;
+            stored_number_next = ctrl_number;
         end
     end
 
