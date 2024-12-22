@@ -27,7 +27,7 @@ module Display_top (
 	wire [11:0] pixel_bricks;
 	wire [11:0] pixel_window, pixel_block;
 	wire [0:1024-1] pixel_circle;
-	reg [14:0] pixel_addr;
+	reg [16:0] pixel_addr;
 	wire [11:0] dina;
 	wire draw_window, draw_circle, draw_line, draw_nums, draw_outer_frame;
 	
@@ -70,7 +70,7 @@ module Display_top (
 	);
 	reg [0:1024-1] mem [0:1];
 	initial begin
-		$readmemb("circle.txt", mem);
+		$readmemb("circle.dat", mem);
 	end
 	assign pixel_circle = mem[0];
 	// Store bricks_wall
