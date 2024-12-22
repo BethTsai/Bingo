@@ -90,10 +90,7 @@ module Master_top (
         .display_nums(cur_number_BCD),
         .map(map),
         .circle(circle),
-        .line(12'h0),
 
-        .PS2_CLK(PS2_CLK),
-        .PS2_DATA(PS2_DATA),
         .hsync(hsync),
         .vsync(vsync),
         .vgaRed(vgaRed),
