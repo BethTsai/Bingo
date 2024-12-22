@@ -212,7 +212,7 @@ module Game_Slave(
         .num_to_pos(num_to_pos),
 
         .guess_done(guess_done),
-        .circles(circle)
+        .circle(circle)
     );
 
     check_win check_win_inst(
