@@ -1,6 +1,6 @@
 `include "../message_macro.v"
 
-module Gmae_Slave(
+module Game_Slave(
     input wire clk,
     input wire rst, 
     input wire interboard_rst, 

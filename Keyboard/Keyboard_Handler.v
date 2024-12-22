@@ -4,7 +4,7 @@ module Keyboard_Handler(
 	inout wire PS2_DATA,
 	inout wire PS2_CLK,
 
-	output reg [3:0] one_num,
+	output reg [7:0] display_num,
 	output reg enter_pulse
 );	
 	wire key_valid;
@@ -46,7 +46,7 @@ module Keyboard_Handler(
 	};
 
 	reg [3:0] key_num;
-	reg [3:0] nums_next;
+	reg [7:0] nums_next;
 	reg one_pressed, one_pressed_next;
 	reg [8:0] prev_pressed;
 
@@ -59,9 +59,9 @@ module Keyboard_Handler(
 		end
 	end
 	always @(*) begin
-		nums_next = one_num;
+		nums_next = display_num;
 		if(!one_pressed && key_valid && key_down[last_change] && key_num <= 4'd9) begin
-			nums_next = key_num;
+			nums_next = {display_num[3:0], key_num};
 		end 
 	end
 	always @(*) begin
@@ -74,7 +74,7 @@ module Keyboard_Handler(
 		if (rst) begin
 			one_pressed <= 9'b0;
 			prev_pressed <= 9'b0;
-			one_num <= 4'b1111;
+			display_num <= 8'b0;
 		end else begin
 			if(!one_pressed && key_valid && key_down[last_change] && key_num!= 4'b1111) begin
 				prev_pressed <= last_change;
@@ -82,7 +82,7 @@ module Keyboard_Handler(
 				prev_pressed <= prev_pressed;
 			end
 			one_pressed <= one_pressed_next;
-			one_num <= nums_next;
+			display_num <= nums_next;
 		end
 	end
 

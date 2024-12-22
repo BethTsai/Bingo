@@ -56,7 +56,7 @@ module Slave_top (
         .rst(rst),
         .PS2_DATA(PS2_DATA),
         .PS2_CLK(PS2_CLK),
-        .one_num(one_num),
+        .display_num(cur_number_BCD),
         .enter_pulse(enter_pulse)
     );
 
