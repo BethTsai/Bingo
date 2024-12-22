@@ -139,7 +139,14 @@ module Slave_top (
         Game_Slave_inst0.i_win, // 1
         Game_Slave_inst0.enter_pulse, // 1
         Game_Slave_inst0.handle_select_inst.used_number, // 25
-        Game_Slave_inst0.handle_select_inst.cur_pos // 5
+        Game_Slave_inst0.handle_select_inst.cur_pos, // 5
+        transmit, // 1
+        Request_out, // 1
+        Ack_out, // 1
+        inter_data_out, // 6
+        Request_in, // 1
+        Ack_in, // 1
+        inter_data_in // 6
     );
 
 

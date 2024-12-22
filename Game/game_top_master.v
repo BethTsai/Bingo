@@ -122,6 +122,9 @@ module Game_Master(
         if(cur_state == IDLE && start_game) begin
             ctrl_en = 1;
         end
+        else if(cur_state == P1_SEL && sel_done) begin
+            ctrl_en = 1;
+        end
         else if(cur_state == P1_GUESS && i_win) begin
             ctrl_en = 1;
         end
