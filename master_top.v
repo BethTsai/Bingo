@@ -147,7 +147,9 @@ module Master_top (
         inter_data_out, // 6
         Request_in, // 1
         Ack_in, // 1
-        inter_data_in // 6
+        inter_data_in, // 6
+        InterboardCommunication_top_inst0.sa.cur_state, // 3
+        inter_ready // 1
     );
     
 
