@@ -18,8 +18,8 @@ if __name__ == "__main__":
     exe_path = "./PicTrans.exe"
 
     for i in range(25):
-        input1 = 64
-        input2 = 64
+        input1 = 32
+        input2 = 32
         input3 = f"./numbers/{i+1}.jpg"
         
         run_exe_with_input(exe_path, input1, input2, input3)

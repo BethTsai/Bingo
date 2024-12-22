@@ -19,6 +19,8 @@ module Keyboard_Handler(
 		.rst(rst),
 		.clk(clk)
 	);
+
+	parameter ENTER_KEY = 9'h05a;
 	parameter [8:0] KEY_CODES [0:19] = {
 		9'b0_0100_0101,	// 0 => 45
 		9'b0_0001_0110,	// 1 => 16
@@ -58,9 +60,15 @@ module Keyboard_Handler(
 	end
 	always @(*) begin
 		nums_next = one_num;
-		if(!one_pressed && key_valid && key_down[last_change] && key_num!= 4'b1111) begin
+		if(!one_pressed && key_valid && key_down[last_change] && key_num <= 4'd9) begin
 			nums_next = key_num;
 		end 
+	end
+	always @(*) begin
+		enter_pulse = 0;
+		if(!one_pressed && key_valid && key_down[last_change] && key_num == 4'd10) begin
+			enter_pulse = 1;
+		end
 	end
 	always @ (posedge clk, posedge rst) begin
 		if (rst) begin
@@ -100,6 +108,7 @@ module Keyboard_Handler(
 			KEY_CODES[17] : key_num = 4'b0111;
 			KEY_CODES[18] : key_num = 4'b1000;
 			KEY_CODES[19] : key_num = 4'b1001;
+			ENTER_KEY: key_num = 4'b1010;
 			default		  : key_num = 4'b1111;
 		endcase
 	end
