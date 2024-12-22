@@ -54,9 +54,10 @@ module Master_top (
     Keyboard_Handler Keyboard_Handler_inst0 (
         .clk(clk),
         .rst(rst),
+		.interboard_rst(interboard_rst),
         .PS2_DATA(PS2_DATA),
         .PS2_CLK(PS2_CLK),
-        .one_num(one_num),
+        .display_num(cur_number_BCD),
         .enter_pulse(enter_pulse)
     );
 
@@ -90,10 +91,7 @@ module Master_top (
         .display_nums(cur_number_BCD),
         .map(map),
         .circle(circle),
-        .line(12'h0),
 
-        .PS2_CLK(PS2_CLK),
-        .PS2_DATA(PS2_DATA),
         .hsync(hsync),
         .vsync(vsync),
         .vgaRed(vgaRed),
@@ -122,6 +120,36 @@ module Master_top (
         .interboard_en(interboard_en),
         .interboard_msg_type(interboard_msg_type),
         .interboard_number(interboard_number)
+    );
+
+    ila_0 ila_inst(
+        clk,
+        ctrl_en, // 1
+        ctrl_msg_type, // 3
+        ctrl_number, // 5
+        interboard_en, // 1
+        interboard_msg_type, // 3
+        interboard_number, // 5
+        Game_Master_inst0.cur_state, // 4
+        Game_Master_inst0.cur_number, // 5
+        Game_Master_inst0.start_sel, // 1
+        Game_Master_inst0.start_guess, // 1
+        Game_Master_inst0.clear_guess, // 1
+        Game_Master_inst0.guess_done, // 1
+        Game_Master_inst0.sel_done, // 1
+        Game_Master_inst0.i_win, // 1
+        Game_Master_inst0.enter_pulse, // 1
+        Game_Master_inst0.num_to_pos, // 125
+        Game_Master_inst0.circle, // 25
+        transmit, // 1
+        Request_out, // 1
+        Ack_out, // 1
+        inter_data_out, // 6
+        Request_in, // 1
+        Ack_in, // 1
+        inter_data_in, // 6
+        InterboardCommunication_top_inst0.sa.cur_state, // 3
+        inter_ready // 1
     );
     
 

@@ -1,4 +1,5 @@
 `include "../message_macro.v"
+`include "slave_game_macro.v"
 
 module handle_guess_slave(
     input wire clk,
@@ -18,9 +19,6 @@ module handle_guess_slave(
     output wire guess_done,
     output reg [25-1:0] circle
 );
-
-    localparam GAME_P2_GUESS = 7;
-    localparam GAME_WAIT_P1_GUESS = 5;
 
     localparam IDLE = 0;
     localparam WAIT_PLAYER_IN = 1;
@@ -49,13 +47,13 @@ module handle_guess_slave(
             next_state = WAIT_PLAYER_IN;
         end
         else if(cur_state == WAIT_PLAYER_IN) begin
-            if(cur_game_state == GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `SEL_NUM) begin
+            if(cur_game_state == `GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `SEL_NUM) begin
                 next_state = FIN;
             end
-            else if(cur_game_state == GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `STATE_WIN) begin
+            else if(cur_game_state == `GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `STATE_WIN) begin
                 next_state = IDLE;
             end
-            else if(cur_game_state == GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5 -: 5]] == 0) begin
+            else if(cur_game_state == `GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
                 next_state = FIN;
             end
             
@@ -70,11 +68,12 @@ module handle_guess_slave(
         if(clear_guess) begin
             circle_next = 0;
         end
-        else if(cur_state == WAIT_PLAYER_IN && cur_game_state == GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[cur_number-1] == 0) begin
-            circle_next[num_to_pos[cur_number*5 -: 5]] = 1;
+        else if(cur_state == WAIT_PLAYER_IN && cur_game_state == `GAME_P2_GUESS && 
+                enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
+            circle_next[num_to_pos[cur_number*5-1 -: 5]] = 1;
         end
-        else if(cur_state == WAIT_PLAYER_IN && cur_game_state == GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `SEL_NUM) begin
-            circle_next[num_to_pos[interboard_number*5 -: 5]] = 1;
+        else if(cur_state == WAIT_PLAYER_IN && cur_game_state == `GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `SEL_NUM) begin
+            circle_next[num_to_pos[interboard_number*5-1 -: 5]] = 1;
         end
 
     end

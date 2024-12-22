@@ -1,0 +1,11 @@
+`define GAME_IDLE 0
+`define GAME_WAIT_P1_SEL 1
+`define GAME_P2_SEL 2
+`define GAME_SEND_START 3
+`define GAME_WAIT_P1_GUESS 4
+`define GAME_WAIT_UPDATE_GUESS 5
+`define GAME_P2_GUESS 6
+`define GAME_SEND_WIN 7
+`define GAME_P2_CHECK_WIN 8
+`define GAME_SEND_SEL 9
+`define GAME_FIN 10
