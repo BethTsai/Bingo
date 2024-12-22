@@ -8,7 +8,8 @@ module handle_select(
     input wire enter_pulse,
 
     output wire sel_done,
-    output reg [25*5-1:0] map
+    output reg [25*5-1:0] map,
+    output reg [25*5-1:0] num_to_pos
 );
 
     localparam IDLE = 0;
@@ -19,6 +20,7 @@ module handle_select(
     reg [25-1:0] used_number, used_number_next;
     reg [4:0] cur_pos, next_pos;
     reg [25*5-1:0] map_next;
+    reg [25*5-1:0] num_to_pos_next;
     
     wire [6:0] cur_number = 10*cur_number_BCD[7:4] + cur_number_BCD[3:0];
     wire all_used = &(used_number);
@@ -29,12 +31,14 @@ module handle_select(
             used_number <= 0;
             cur_pos <= 0;
             map <= 0;
+            num_to_pos <= 0;
         end
         else begin
             cur_state <= next_state;
             used_number <= used_number_next;
             cur_pos <= next_pos;
             map <= map_next;
+            num_to_pos <= num_to_pos_next;
         end
     end
 
@@ -57,17 +61,22 @@ module handle_select(
         used_number_next = used_number;
         next_pos = cur_pos;
         map_next = map;
+        num_to_pos_next = num_to_pos;
         if(cur_state == IDLE && start_sel) begin
             used_number_next = 0;
             next_pos = 0;
             map_next = 0;
+            num_to_pos_next = 0;
         end
         else if(cur_state == SEL && enter_pulse && 1 <= cur_number && cur_number <= 25 && used_number[cur_number-1] == 0) begin
             used_number_next[cur_number-1] = 1;
             next_pos = cur_pos+1;
             map_next[cur_pos*5-1 -: 5] = cur_number;
+            num_to_pos_next[cur_number*5 -: 5] = cur_pos;
         end
     end
+
+
 
 
 endmodule
