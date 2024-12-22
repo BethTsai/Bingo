@@ -5,10 +5,8 @@ module Display_top (
 	input wire [7:0] display_nums,
     input wire [5*25-1:0] map,		// Table that need to be shown
 	input wire [25-1:0] circle, 	// Circles that need to be shown
-	input wire [12-1:0] line,
+	// input wire [12-1:0] line,
 
-	inout PS2_CLK,
-	inout PS2_DATA,
     output wire hsync,
     output wire vsync,
     output wire [3:0] vgaRed,
@@ -25,20 +23,21 @@ module Display_top (
 	assign all_rst = rst | interboard_rst;
 
 	reg [11:0] pixel;
-	reg [11:0] pixel_bricks;
-	wire [11:0] pixel_window;
-	reg [0:1024-1] pixel_circle;
+	wire [11:0] pixel_bricks;
+	wire [11:0] pixel_window, pixel_block;
+	wire [0:1024-1] pixel_circle;
 	reg [14:0] pixel_addr;
+	wire [11:0] dina;
 	wire draw_window, draw_circle, draw_line, draw_nums, draw_outer_frame;
 	
 	wire [3:0] one_num;
 	wire [15:0] nums;
 	wire [9:0] h_cnt, v_cnt;
 	reg [2:0] block_x, block_y;
-	reg [6:0] pixel_x, pixel_y;
+	reg [5:0] pixel_x, pixel_y;
 
 	assign nums = {8'hff, display_nums};
-
+	assign draw_circle = circle[block_x + block_y * 5];
 	assign {vgaRed, vgaGreen, vgaBlue} = (valid) ? pixel : 12'h0;
     vga_controller vga_inst(
         .pclk(clk_25MHz),
@@ -58,7 +57,7 @@ module Display_top (
 		.block_y(block_y),
 		.pixel_x(pixel_x),
 		.pixel_y(pixel_y),
-		.pixel_window(pixel_window)
+		.pixel_window(pixel_block)
 	);
 
 	SevenSegment Sevenseg_inst0(
@@ -82,22 +81,26 @@ module Display_top (
 
 	always @(*) begin
 		if(draw_window) begin
-			pixel_addr = (h_cnt - 160) + (v_cnt - 80) * 320;
-		end
+			pixel_addr = ((h_cnt - 160) >> 1) + ((v_cnt - 80) >> 1 )* 160;
+		end 
 		else begin
 			pixel_addr = (v_cnt%120)*160 + h_cnt%160;
 		end
+		// pixel_addr_0 = (v_cnt%120)*160 + h_cnt%160;
 	end
-
 	always @(*) begin
-		if(draw_line) begin
-		end
-		else if(draw_window) begin
+		// if(draw_line) begin
+		// end
+		if(draw_window) begin
 			if(draw_circle) begin
-				pixel = pixel_circle[pixel_x + pixel_y * 64] == 0 ? 12'h0 : pixel_window;
+				if (pixel_circle[(pixel_x >> 1) + (pixel_y >> 1 )* 32] == 0) begin
+					pixel = pixel_block == 0 ? pixel_window : pixel_block;	
+				end else begin
+					pixel = pixel_circle[(pixel_x >> 1) + (pixel_y >> 1) * 32];
+				end
 			end
-			else begin
-				pixel = pixel_window;
+			else begin	// pixel_block == 0 means transparent
+				pixel = pixel_block == 0 ? pixel_window : pixel_block;
 			end
 		end
 		else if(draw_outer_frame)begin
@@ -105,6 +108,35 @@ module Display_top (
 		end
 		else begin
 			pixel = pixel_bricks;
+		end
+	end
+	
+	// block X
+	always @(*) begin
+		block_x = 0;
+		if(h_cnt >= 160 && h_cnt < 480)begin
+			block_x = (h_cnt - 160) >> 6;
+		end
+	end
+	// block Y
+	always @(*) begin
+		block_y = 0;
+		if(v_cnt >= 80 && v_cnt < 400)begin
+			block_y = (v_cnt - 80) >> 6;
+		end
+	end
+	// pixel X
+	always @(*) begin
+		pixel_x = 0;
+		if(h_cnt >= 160 && h_cnt < 480)begin
+			pixel_x = (h_cnt - 160) & 63;
+		end
+	end
+	// pixel Y
+	always @(*) begin
+		pixel_y = 0;
+		if(v_cnt >= 80 && v_cnt < 400)begin
+			pixel_y = (v_cnt - 80) & 63;
 		end
 	end
 endmodule
