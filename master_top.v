@@ -139,8 +139,8 @@ module Master_top (
         Game_Master_inst0.sel_done, // 1
         Game_Master_inst0.i_win, // 1
         Game_Master_inst0.enter_pulse, // 1
-        Game_Master_inst0.handle_select_inst.used_number, // 25
-        Game_Master_inst0.handle_select_inst.cur_pos, // 5
+        Game_Master_inst0.num_to_pos, // 125
+        Game_Master_inst0.circle, // 25
         transmit, // 1
         Request_out, // 1
         Ack_out, // 1
