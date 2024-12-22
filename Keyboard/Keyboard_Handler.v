@@ -16,7 +16,7 @@ module Keyboard_Handler(
 		.key_valid(key_valid),
 		.PS2_DATA(PS2_DATA),
 		.PS2_CLK(PS2_CLK),
-		.rst(rst),
+		.rst(all_rst),
 		.clk(clk)
 	);
 
@@ -70,7 +70,7 @@ module Keyboard_Handler(
 			enter_pulse = 1;
 		end
 	end
-	always @ (posedge clk, posedge rst) begin
+	always @ (posedge clk) begin
 		if (rst) begin
 			one_pressed <= 9'b0;
 			prev_pressed <= 9'b0;
