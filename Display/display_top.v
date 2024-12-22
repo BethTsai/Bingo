@@ -22,7 +22,7 @@ module Display_top (
 
 
 	wire clk_25MHz;
-    clock_divider #(.n(2)) m2 (.clk(clk), .clk_div(clk_25MHz));
+    clock_divider #(.n(1)) m2 (.clk(clk), .clk_div(clk_25MHz));
 
 	wire all_rst;
 	assign all_rst = rst | interboard_rst;

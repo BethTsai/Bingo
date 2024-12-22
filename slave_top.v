@@ -28,6 +28,9 @@ module Slave_top (
     wire start_game;
     button_preprocess bp0(.clk(clk), .signal_in(btnR), .signal_out(start_game));
 
+    wire clk_50M;
+    clock_divider #(.n(1)) cd0(.clk(clk), .clk_div(clk_50M));
+
     // output of keyboard_handler
     wire enter_pulse;
     wire [3:0] one_num;
@@ -53,7 +56,7 @@ module Slave_top (
     wire [25-1:0] circle;
     
     Keyboard_Handler Keyboard_Handler_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
 		.interboard_rst(interboard_rst),
         .PS2_DATA(PS2_DATA),
@@ -63,7 +66,7 @@ module Slave_top (
     );
 
     Game_Slave Game_Slave_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .interboard_rst(interboard_rst),
 
@@ -85,7 +88,7 @@ module Slave_top (
     );
 
     Display_top Display_top_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .interboard_rst(interboard_rst),
         .display_nums(cur_number_BCD),
@@ -102,7 +105,7 @@ module Slave_top (
     );
 
     InterboardCommunication_top InterboardCommunication_top_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .transmit(transmit),
         .Request_in(Request_in),
