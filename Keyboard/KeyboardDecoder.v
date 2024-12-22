@@ -43,8 +43,8 @@ module KeyboardDecoder(
 	);
 	
 	one_pulse op (
-		.pb_out(pulse_been_ready),
-		.pb_in(been_ready),
+		.pb_op(pulse_been_ready),
+		.pb_db(been_ready),
 		.clk(clk)
 	);
     
