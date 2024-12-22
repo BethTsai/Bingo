@@ -11,8 +11,8 @@ module display_TB(
 	output wire [6:0] DISPLAY,
 	output wire [3:0] DIGIT
 );
-	reg [5*25-1:0] map;
-	reg [25-1:0] circle;
+	reg [0:5*25-1] map;
+	reg [0:24] circle;
 
 	wire circle_pat_change;
 	button_preprocess button_press_inst( .clk(clk), .signal_in(change_cirle), .signal_out(circle_pat_change));
@@ -33,18 +33,20 @@ module display_TB(
 		.DIGIT(DIGIT)
 	);
 
-	always @* begin
+	always @(posedge clk) begin
 		if(rst) begin
-			map <= {5'd1, 5'd12, 5'd19, 5'd20, 5'd21, 
-					5'd22, 5'd23, 5'd24, 5'd25, 5'd2,
-					5'd3, 5'd4, 5'd5, 5'd6, 5'd7,
-					5'd8, 5'd9, 5'd10, 5'd11, 5'd13,
-					5'd14, 5'd15, 5'd16, 5'd17, 5'd18};
-			circle <= 25'd0;
+			// 5 bit num from 1 to 25
+			map <= {5'd1, 5'd2, 5'd3, 5'd4, 5'd5,
+					5'd6, 5'd7, 5'd8, 5'd9, 5'd10,
+					5'd11, 5'd12, 5'd13, 5'd14, 5'd15,
+					5'd16, 5'd17, 5'd18, 5'd19, 5'd20,
+					5'd21, 5'd22, 5'd23, 5'd24, 5'd25};
+
+			circle <= {1'd1,24'd0};
 		end else begin
 			map <= map;
 			if(circle_pat_change) begin
-				circle <= circle + 1;
+				circle <= (circle >> 1) == 0 ? {1'd1,24'd0} : circle >> 1;
 			end else begin
 				circle <= circle;
 			end

@@ -1,11 +1,13 @@
 import os
 
 if __name__ == "__main__":
-    base_dir = "./COE"
+    base_dir = "./circle"
     final_output = []
     
     for idx in range(1, 26):
-        file_path = os.path.join(base_dir, f"{idx}.coe")
+        # file_path = os.path.join(base_dir, f"{idx}.coe")
+        file_path = os.path.join(base_dir, f"out.coe")
+    
     
         try:
             with open(file_path, 'r') as file:
@@ -30,7 +32,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error processing file {file_path}: {e}")
                     
-    output_file_path = os.path.join(base_dir, "../final_number.coe")
+    output_file_path = os.path.join(base_dir, "../final_circle.coe")
     try:
         with open(output_file_path, 'w') as output_file:
             for line in final_output:

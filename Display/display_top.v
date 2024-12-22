@@ -16,6 +16,7 @@ module Display_top (
     output wire [3:0] DIGIT
 );
 	localparam FRAME = 12'h732;
+	localparam CIRCLE_COLOR = 12'hc22;
 	wire clk_25MHz;
     clock_divider #(.n(2)) m2 (.clk(clk), .clk_div(clk_25MHz));
 
@@ -37,7 +38,7 @@ module Display_top (
 	reg [5:0] pixel_x, pixel_y;
 
 	assign nums = {8'hff, display_nums};
-	assign draw_circle = circle[block_x + block_y * 5];
+	
 	assign {vgaRed, vgaGreen, vgaBlue} = (valid) ? pixel : 12'h0;
     vga_controller vga_inst(
         .pclk(clk_25MHz),
@@ -78,7 +79,7 @@ module Display_top (
 	assign draw_window = (h_cnt >= 160 && h_cnt < 480) && (v_cnt >= 80 && v_cnt < 400);
 	assign draw_outer_frame = (((h_cnt >= 158 && h_cnt < 160) || (h_cnt >= 480 && h_cnt < 482)) && (v_cnt >= 78 && v_cnt < 402)) ||
 								(((v_cnt >= 78 && v_cnt < 80) || (v_cnt >= 400 && v_cnt < 402)) && (h_cnt >= 158 && h_cnt < 482));
-
+	assign draw_circle = circle[block_x + block_y * 5];
 	always @(*) begin
 		if(draw_window) begin
 			pixel_addr = ((h_cnt - 160) >> 1) + ((v_cnt - 80) >> 1 )* 160;
@@ -96,7 +97,7 @@ module Display_top (
 				if (pixel_circle[(pixel_x >> 1) + (pixel_y >> 1 )* 32] == 0) begin
 					pixel = pixel_block == 0 ? pixel_window : pixel_block;	
 				end else begin
-					pixel = pixel_circle[(pixel_x >> 1) + (pixel_y >> 1) * 32];
+					pixel = CIRCLE_COLOR;
 				end
 			end
 			else begin	// pixel_block == 0 means transparent
