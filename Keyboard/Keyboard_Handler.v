@@ -52,40 +52,59 @@ module Keyboard_Handler(
 	reg [7:0] nums_next;
 	reg one_pressed, one_pressed_next;
 	reg [8:0] prev_pressed;
+	wire cur_holding = |(key_down);
+	reg prev_holding;
 
 	always @(*) begin
-		one_pressed_next = one_pressed;
-		if(!one_pressed && key_valid && key_down[last_change] && key_num!= 4'b1111) begin
-			one_pressed_next = 1;
-		end else if(one_pressed && key_valid && !key_down[last_change] && last_change == prev_pressed) begin
-			one_pressed_next = 0;
+		nums_next = display_num;
+		if(!prev_holding && key_valid && key_num <= 9) begin
+			nums_next = {display_num[3:0], key_num};
 		end
 	end
-	always @(*) begin
-		nums_next = display_num;
-		if(!one_pressed && key_valid && key_down[last_change] && key_num <= 4'd9) begin
-			nums_next = {display_num[3:0], key_num};
-		end 
-	end
-	always @(*) begin
+
+	always@* begin
 		enter_pulse = 0;
-		if(!one_pressed && key_valid && key_down[last_change] && key_num == 4'd10) begin
+		if(!prev_holding && key_valid && key_num == 10) begin
 			enter_pulse = 1;
 		end
 	end
+
+	// always @(*) begin
+	// 	one_pressed_next = one_pressed;
+	// 	if(!one_pressed && key_valid && key_down[last_change] && key_num!= 4'b1111) begin
+	// 		one_pressed_next = 1;
+	// 	end else if(one_pressed && key_valid && !key_down[last_change] && last_change == prev_pressed) begin
+	// 		one_pressed_next = 0;
+	// 	end
+	// end
+	// always @(*) begin
+	// 	nums_next = display_num;
+	// 	if(!one_pressed && key_valid && key_down[last_change] && key_num <= 4'd9) begin
+	// 		nums_next = {display_num[3:0], key_num};
+	// 	end 
+	// end
+	// always @(*) begin
+	// 	enter_pulse = 0;
+	// 	if(!one_pressed && key_valid && key_down[last_change] && key_num == 4'd10) begin
+	// 		enter_pulse = 1;
+	// 	end
+	// end
+
 	always @ (posedge clk) begin
 		if (all_rst) begin
-			one_pressed <= 9'b0;
-			prev_pressed <= 9'b0;
+			// one_pressed <= 9'b0;
+			// prev_pressed <= 9'b0;
 			display_num <= 8'b0;
+			prev_holding <= 0;
 		end else begin
-			if(!one_pressed && key_valid && key_down[last_change] && key_num!= 4'b1111) begin
-				prev_pressed <= last_change;
-			end else begin
-				prev_pressed <= prev_pressed;
-			end
-			one_pressed <= one_pressed_next;
+			// if(!one_pressed && key_valid && key_down[last_change] && key_num!= 4'b1111) begin
+			// 	prev_pressed <= last_change;
+			// end else begin
+			// 	prev_pressed <= prev_pressed;
+			// end
+			// one_pressed <= one_pressed_next;
 			display_num <= nums_next;
+			prev_holding <= cur_holding;
 		end
 	end
 

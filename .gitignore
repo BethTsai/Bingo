@@ -9,6 +9,6 @@
 /**/*.exe
 # /**/*.jpg
 
-/**/*.coe
-!final_number.coe
-!final_circle.coe
+# /**/*.coe
+# !final_number.coe
+# !final_circle.coe

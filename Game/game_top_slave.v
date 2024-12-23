@@ -138,7 +138,7 @@ module Game_Slave(
         if(cur_state == `GAME_SEND_START && inter_ready) begin
             start_guess = 1;
         end
-        else if(cur_state == `GAME_WAIT_UPDATE_GUESS && guess_done) begin
+        else if(cur_state == `GAME_P2_GUESS) begin
             start_guess = 1;
         end
         else if(cur_state == `GAME_SEND_SEL && inter_ready) begin
@@ -193,6 +193,9 @@ module Game_Slave(
         .rst(rst),
         .interboard_rst(interboard_rst),
 
+		.interboard_en(interboard_en),
+		.interboard_msg_type(interboard_msg_type),
+		.interboard_number(interboard_number),
         .cur_game_state(cur_state),
         .clear_guess(clear_guess),
         .start_guess(start_guess),

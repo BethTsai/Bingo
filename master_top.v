@@ -26,6 +26,9 @@ module Master_top (
 
     wire start_game;
     button_preprocess bp0(.clk(clk), .signal_in(btnR), .signal_out(start_game));
+    
+    wire clk_50M;
+    clock_divider #(.n(1)) cd0(.clk(clk), .clk_div(clk_50M));
 
     // output of keyboard_handler
     wire enter_pulse;
@@ -52,7 +55,7 @@ module Master_top (
     wire [25-1:0] circle;
     
     Keyboard_Handler Keyboard_Handler_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
 		.interboard_rst(interboard_rst),
         .PS2_DATA(PS2_DATA),
@@ -62,7 +65,7 @@ module Master_top (
     );
 
     Game_Master Game_Master_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .interboard_rst(interboard_rst),
 
@@ -85,7 +88,7 @@ module Master_top (
     );
 
     Display_top Display_top_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .interboard_rst(interboard_rst),
         .display_nums(cur_number_BCD),
@@ -102,7 +105,7 @@ module Master_top (
     );
 
     InterboardCommunication_top InterboardCommunication_top_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .transmit(transmit),
         .Request_in(Request_in),
@@ -122,25 +125,48 @@ module Master_top (
         .interboard_number(interboard_number)
     );
 
+    // ila_0 ila_inst(
+    //     clk,
+    //     ctrl_en, // 1
+    //     ctrl_msg_type, // 3
+    //     ctrl_number, // 5
+    //     interboard_en, // 1
+    //     interboard_msg_type, // 3
+    //     interboard_number, // 5
+    //     Game_Master_inst0.cur_state, // 4
+    //     Game_Master_inst0.cur_number, // 5
+    //     Game_Master_inst0.start_sel, // 1
+    //     Game_Master_inst0.start_guess, // 1
+    //     Game_Master_inst0.clear_guess, // 1
+    //     Game_Master_inst0.guess_done, // 1
+    //     Game_Master_inst0.sel_done, // 1
+    //     Game_Master_inst0.i_win, // 1
+    //     Game_Master_inst0.enter_pulse, // 1
+    //     Game_Master_inst0.num_to_pos, // 125
+    //     Game_Master_inst0.circle, // 25
+    //     transmit, // 1
+    //     Request_out, // 1
+    //     Ack_out, // 1
+    //     inter_data_out, // 6
+    //     Request_in, // 1
+    //     Ack_in, // 1
+    //     inter_data_in, // 6
+    //     InterboardCommunication_top_inst0.sa.cur_state, // 3
+    //     inter_ready // 1
+    // );
+    
     ila_0 ila_inst(
         clk,
-        ctrl_en, // 1
-        ctrl_msg_type, // 3
         interboard_en, // 1
         interboard_msg_type, // 3
         interboard_number, // 5
         Game_Master_inst0.cur_state, // 4
-        Game_Master_inst0.start_sel, // 1
         Game_Master_inst0.start_guess, // 1
-        Game_Master_inst0.clear_guess, // 1
-        Game_Master_inst0.guess_done, // 1
-        Game_Master_inst0.sel_done, // 1
-        Game_Master_inst0.i_win, // 1
-        Game_Master_inst0.enter_pulse, // 1
-        Game_Master_inst0.num_to_pos, // 125
-        Game_Master_inst0.circle // 25
+        Game_Master_inst0.start_sel, // 1
+        Game_Master_inst0.handle_select_inst.cur_state, // 2
+        Game_Master_inst0.handle_guess_inst.cur_state, // 2
+        start_game // 1
     );
-    
 
 
 endmodule

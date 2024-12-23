@@ -73,7 +73,7 @@ module Game_Master(
         else if(cur_state == `GAME_WAIT_P2_SEL && interboard_en && interboard_msg_type == `STATE_TURN) begin
             next_state = `GAME_P1_GUESS;
         end
-        else if(cur_state == `GAME_P1_GUESS && guess_done) begin
+        else if(cur_state == `GAME_P1_GUESS) begin
             if(guess_done) begin
                 next_state = `GAME_P1_CHECK_WIN;
             end
@@ -95,7 +95,7 @@ module Game_Master(
         else if(cur_state == `GAME_SEND_I_WIN && inter_ready) begin
             next_state = `GAME_FIN;
         end
-        else if(cur_state == `GAME_WAIT_P2_GUESS && interboard_en && interboard_msg_type == `STATE_WIN) begin
+        else if(cur_state == `GAME_WAIT_P2_GUESS && interboard_en) begin
             if(interboard_msg_type == `STATE_WIN) begin
                 next_state = `GAME_FIN;
             end
@@ -143,7 +143,7 @@ module Game_Master(
     end
 
     always@* begin
-        if(cur_state == `GAME_FIN && start_game) begin
+        if(cur_state == `GAME_IDLE) begin
             clear_guess = 1;
         end
         else begin
@@ -158,9 +158,12 @@ module Game_Master(
         else if(cur_state == `GAME_SEND_SEL && inter_ready) begin
             start_guess = 1;
         end
-        else if(cur_state == `GAME_WAIT_UPDATE_GUESS && guess_done) begin
+        else if(cur_state == `GAME_P1_GUESS) begin
             start_guess = 1;
         end
+        // else if(cur_state == `GAME_WAIT_UPDATE_GUESS && guess_done) begin
+        //     start_guess = 1;
+        // end
         else begin
             start_guess = 0;
         end

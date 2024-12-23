@@ -21,11 +21,15 @@ module Slave_top (
     output wire vsync,
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
-    output wire [3:0] vgaBlue
+    output wire [3:0] vgaBlue,
+    output wire [15:0] LED
 );
 
     wire start_game;
     button_preprocess bp0(.clk(clk), .signal_in(btnR), .signal_out(start_game));
+
+    wire clk_50M;
+    clock_divider #(.n(1)) cd0(.clk(clk), .clk_div(clk_50M));
 
     // output of keyboard_handler
     wire enter_pulse;
@@ -52,7 +56,7 @@ module Slave_top (
     wire [25-1:0] circle;
     
     Keyboard_Handler Keyboard_Handler_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
 		.interboard_rst(interboard_rst),
         .PS2_DATA(PS2_DATA),
@@ -62,7 +66,7 @@ module Slave_top (
     );
 
     Game_Slave Game_Slave_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .interboard_rst(interboard_rst),
 
@@ -84,7 +88,7 @@ module Slave_top (
     );
 
     Display_top Display_top_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .interboard_rst(interboard_rst),
         .display_nums(cur_number_BCD),
@@ -101,7 +105,7 @@ module Slave_top (
     );
 
     InterboardCommunication_top InterboardCommunication_top_inst0 (
-        .clk(clk),
+        .clk(clk_50M),
         .rst(rst),
         .transmit(transmit),
         .Request_in(Request_in),
@@ -121,33 +125,49 @@ module Slave_top (
         .interboard_number(interboard_number)
     );
     
-    ila_0 ila_inst(
-        clk,
-        ctrl_en, // 1
-        ctrl_msg_type, // 3
-        ctrl_number, // 5
+    // ila_1 ila_inst(
+    //     clk,
+    //     // ctrl_en, // 1
+    //     // ctrl_msg_type, // 3
+    //     // ctrl_number, // 5
+    //     interboard_en, // 1
+    //     interboard_msg_type, // 3
+    //     interboard_number, // 5
+    //     Game_Slave_inst0.cur_state, // 4
+    //     // Game_Slave_inst0.cur_number, // 5
+    //     Game_Slave_inst0.start_sel, // 1
+    //     Game_Slave_inst0.start_guess, // 1
+    //     // Game_Slave_inst0.clear_guess, // 1
+    //     Game_Slave_inst0.guess_done, // 1
+    //     Game_Slave_inst0.sel_done, // 1
+    //     // Game_Slave_inst0.i_win, // 1
+    //     // Game_Slave_inst0.enter_pulse, // 1
+    //     // Game_Slave_inst0.handle_select_inst.used_number, // 25
+    //     // Game_Slave_inst0.handle_select_inst.cur_pos, // 5
+    //     // transmit, // 1
+    //     // Request_out, // 1
+    //     // Ack_out, // 1
+    //     // inter_data_out, // 6
+    //     // Request_in, // 1
+    //     // Ack_in, // 1
+    //     // inter_data_in, // 6
+	// 	Game_Slave_inst0.handle_guess_inst.cur_state // 2
+    // );
+
+    ila_1 ila_inst(
+        clk, 
         interboard_en, // 1
         interboard_msg_type, // 3
         interboard_number, // 5
         Game_Slave_inst0.cur_state, // 4
-        Game_Slave_inst0.cur_number, // 5
-        Game_Slave_inst0.start_sel, // 1
-        Game_Slave_inst0.start_guess, // 1
-        Game_Slave_inst0.clear_guess, // 1
         Game_Slave_inst0.guess_done, // 1
-        Game_Slave_inst0.sel_done, // 1
-        Game_Slave_inst0.i_win, // 1
-        Game_Slave_inst0.enter_pulse, // 1
-        Game_Slave_inst0.handle_select_inst.used_number, // 25
-        Game_Slave_inst0.handle_select_inst.cur_pos, // 5
-        transmit, // 1
-        Request_out, // 1
-        Ack_out, // 1
-        inter_data_out, // 6
-        Request_in, // 1
-        Ack_in, // 1
-        inter_data_in // 6
+        Game_Slave_inst0.start_guess, // 1
+        Game_Slave_inst0.handle_guess_inst.cur_state, // 2
+		1,
+        Game_Slave_inst0.handle_guess_inst.circle // 25
     );
 
+    assign LED[3:0] = Game_Slave_inst0.cur_state;
+    assign LED[7:4] = Game_Slave_inst0.handle_guess_inst.cur_state;
 
 endmodule
