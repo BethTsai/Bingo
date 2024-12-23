@@ -63,16 +63,6 @@ module handle_guess_slave(
             else if(cur_game_state == `GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
                 next_state = FIN;
             end
-            // if(interboard_en && interboard_msg_type == `SEL_NUM) begin
-            //     next_state = FIN;
-            // end
-            // else if(interboard_en && interboard_msg_type == `STATE_WIN) begin
-            //     next_state = IDLE;
-            // end
-            // else if(cur_game_state == `GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
-            //     next_state = FIN;
-            // end
-            
         end
         else if(cur_state == FIN) begin
             next_state = IDLE;
