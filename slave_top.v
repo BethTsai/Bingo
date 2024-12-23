@@ -26,9 +26,9 @@ module Slave_top (
 );
 
     wire start_game;
-    button_preprocess bp0(.clk(clk), .signal_in(btnR), .signal_out(start_game));
-
     wire clk_50M;
+    
+    button_preprocess bp0(.clk(clk_50M), .signal_in(btnR), .signal_out(start_game));
     clock_divider #(.n(1)) cd0(.clk(clk), .clk_div(clk_50M));
 
     // output of keyboard_handler

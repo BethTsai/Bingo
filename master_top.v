@@ -25,9 +25,9 @@ module Master_top (
 );
 
     wire start_game;
-    button_preprocess bp0(.clk(clk), .signal_in(btnR), .signal_out(start_game));
-    
     wire clk_50M;
+    button_preprocess bp0(.clk(clk_50M), .signal_in(btnR), .signal_out(start_game));
+    
     clock_divider #(.n(1)) cd0(.clk(clk), .clk_div(clk_50M));
 
     // output of keyboard_handler
@@ -155,18 +155,18 @@ module Master_top (
     //     inter_ready // 1
     // );
     
-    ila_0 ila_inst(
-        clk,
-        interboard_en, // 1
-        interboard_msg_type, // 3
-        interboard_number, // 5
-        Game_Master_inst0.cur_state, // 4
-        Game_Master_inst0.start_guess, // 1
-        Game_Master_inst0.start_sel, // 1
-        Game_Master_inst0.handle_select_inst.cur_state, // 2
-        Game_Master_inst0.handle_guess_inst.cur_state, // 2
-        start_game // 1
-    );
+    // ila_0 ila_inst(
+    //     clk,
+    //     interboard_en, // 1
+    //     interboard_msg_type, // 3
+    //     interboard_number, // 5
+    //     Game_Master_inst0.cur_state, // 4
+    //     Game_Master_inst0.start_guess, // 1
+    //     Game_Master_inst0.start_sel, // 1
+    //     Game_Master_inst0.handle_select_inst.cur_state, // 2
+    //     Game_Master_inst0.handle_guess_inst.cur_state, // 2
+    //     start_game // 1
+    // );
 
 
 endmodule
