@@ -154,6 +154,17 @@ module Slave_top (
 	// 	Game_Slave_inst0.handle_guess_inst.cur_state // 2
     // );
 
+    ila_1 ila_inst(
+        clk, 
+        interboard_en, // 1
+        interboard_msg_type, // 3
+        interboard_number, // 5
+        Game_Slave_inst0.cur_state, // 4
+        Game_Slave_inst0.guess_done, // 1
+        Game_Slave_inst0.start_guess, // 1
+        Game_Slave_inst0.handle_guess_inst.cur_state // 2
+    );
+
     assign LED[3:0] = Game_Slave_inst0.cur_state;
     assign LED[7:4] = Game_Slave_inst0.handle_guess_inst.cur_state;
 

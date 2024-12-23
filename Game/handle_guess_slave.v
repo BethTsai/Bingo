@@ -24,6 +24,13 @@ module handle_guess_slave(
     localparam WAIT_PLAYER_IN = 1;
     localparam FIN = 2;
 
+    wire delayed_en;
+    delay_n_cycle #(.n(5)) delay_en(
+        .clk(clk),
+        .in(interboard_en),
+        .out(delayed_en)
+    );
+
     reg [25-1:0] circle_next;
     reg [1:0] cur_state, next_state;
     wire [6:0] cur_number = 10*cur_number_BCD[7:4] + cur_number_BCD[3:0];
@@ -47,24 +54,24 @@ module handle_guess_slave(
             next_state = WAIT_PLAYER_IN;
         end
         else if(cur_state == WAIT_PLAYER_IN) begin
-            // if(cur_game_state == `GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `SEL_NUM) begin
-            //     next_state = FIN;
-            // end
-            // else if(cur_game_state == `GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `STATE_WIN) begin
-            //     next_state = IDLE;
-            // end
-            // else if(cur_game_state == `GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
-            //     next_state = FIN;
-            // end
-            if(interboard_en && interboard_msg_type == `SEL_NUM) begin
+            if(cur_game_state == `GAME_WAIT_P1_GUESS && delayed_en && interboard_msg_type == `SEL_NUM) begin
                 next_state = FIN;
             end
-            else if(interboard_en && interboard_msg_type == `STATE_WIN) begin
+            else if(cur_game_state == `GAME_WAIT_P1_GUESS && delayed_en && interboard_msg_type == `STATE_WIN) begin
                 next_state = IDLE;
             end
             else if(cur_game_state == `GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
                 next_state = FIN;
             end
+            // if(interboard_en && interboard_msg_type == `SEL_NUM) begin
+            //     next_state = FIN;
+            // end
+            // else if(interboard_en && interboard_msg_type == `STATE_WIN) begin
+            //     next_state = IDLE;
+            // end
+            // else if(cur_game_state == `GAME_P2_GUESS && enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
+            //     next_state = FIN;
+            // end
             
         end
         else if(cur_state == FIN) begin
@@ -81,10 +88,9 @@ module handle_guess_slave(
                 enter_pulse && 1 <= cur_number && cur_number <= 25 && circle[num_to_pos[cur_number*5-1 -: 5]] == 0) begin
             circle_next[num_to_pos[cur_number*5-1 -: 5]] = 1;
         end
-        else if(cur_state == WAIT_PLAYER_IN && cur_game_state == `GAME_WAIT_P1_GUESS && interboard_en && interboard_msg_type == `SEL_NUM) begin
+        else if(cur_state == WAIT_PLAYER_IN && cur_game_state == `GAME_WAIT_P1_GUESS && delayed_en && interboard_msg_type == `SEL_NUM) begin
             circle_next[num_to_pos[interboard_number*5-1 -: 5]] = 1;
         end
-
     end
 
 
