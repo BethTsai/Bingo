@@ -3,6 +3,7 @@ module handle_select(
     input wire rst,
     input wire interboard_rst,
 
+    input wire clear_sel,
     input wire start_sel,
     input wire [7:0] cur_number_BCD,
     input wire enter_pulse,
