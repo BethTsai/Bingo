@@ -15,6 +15,7 @@ module Game_Master(
     input wire [2:0] interboard_msg_type,
     input wire [4:0] interboard_number,
 
+    output wire my_turn,
     output reg transmit,
     output reg ctrl_en,
     output reg [2:0] ctrl_msg_type,
@@ -58,6 +59,9 @@ module Game_Master(
     end
 
     assign clear_sel = (cur_state == `GAME_IDLE);
+    assign my_turn = (cur_state == `GAME_P1_SEL || 
+                      cur_state == `GAME_P1_GUESS || 
+                      cur_state == `GAME_FIN);
 
     always@* begin
         next_state = cur_state;

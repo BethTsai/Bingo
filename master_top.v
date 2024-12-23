@@ -10,6 +10,8 @@ module Master_top (
     input wire Ack_in,
     input wire [5:0] inter_data_in,
 
+    output wire [15:0] LED,
+
     output wire Request_out,
     output wire Ack_out,
     output wire [5:0] inter_data_out,
@@ -53,7 +55,10 @@ module Master_top (
     wire [4:0] ctrl_number;
     wire [5*25-1:0] map;
     wire [25-1:0] circle;
+    wire my_turn;
     
+    assign LED = {16{my_turn}};
+
     Keyboard_Handler Keyboard_Handler_inst0 (
         .clk(clk_50M),
         .rst(rst),
@@ -78,6 +83,7 @@ module Master_top (
         .interboard_msg_type(interboard_msg_type),
         .interboard_number(interboard_number),
 
+        .my_turn(my_turn),
         .transmit(transmit),
         .ctrl_en(ctrl_en),
         .ctrl_msg_type(ctrl_msg_type),

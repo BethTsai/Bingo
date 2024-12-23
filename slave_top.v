@@ -47,13 +47,14 @@ module Slave_top (
     wire [4:0] interboard_number;
     
 
-    // output of game_master
+    // output of game_slave
     wire transmit;
     wire ctrl_en;
     wire [2:0] ctrl_msg_type;
     wire [4:0] ctrl_number;
     wire [5*25-1:0] map;
     wire [25-1:0] circle;
+    wire my_turn;
     
     Keyboard_Handler Keyboard_Handler_inst0 (
         .clk(clk_50M),
@@ -78,6 +79,7 @@ module Slave_top (
         .interboard_msg_type(interboard_msg_type),
         .interboard_number(interboard_number),
 
+        .my_turn(my_turn),
         .transmit(transmit),
         .ctrl_en(ctrl_en),
         .ctrl_msg_type(ctrl_msg_type),
@@ -167,7 +169,8 @@ module Slave_top (
         Game_Slave_inst0.handle_guess_inst.circle // 25
     );
 
-    assign LED[3:0] = Game_Slave_inst0.cur_state;
-    assign LED[7:4] = Game_Slave_inst0.handle_guess_inst.cur_state;
+    // assign LED[3:0] = Game_Slave_inst0.cur_state;
+    // assign LED[7:4] = Game_Slave_inst0.handle_guess_inst.cur_state;
+    assign LED = {16{my_turn}};
 
 endmodule
