@@ -3,6 +3,7 @@ module handle_select(
     input wire rst,
     input wire interboard_rst,
 
+    input wire clear_sel,
     input wire start_sel,
     input wire [7:0] cur_number_BCD,
     input wire enter_pulse,
@@ -62,7 +63,13 @@ module handle_select(
         next_pos = cur_pos;
         map_next = map;
         num_to_pos_next = num_to_pos;
-        if(cur_state == IDLE && start_sel) begin
+        // if(cur_state == IDLE && start_sel) begin
+        //     used_number_next = 0;
+        //     next_pos = 0;
+        //     map_next = 0;
+        //     num_to_pos_next = 0;
+        // end
+        if(clear_sel) begin
             used_number_next = 0;
             next_pos = 0;
             map_next = 0;

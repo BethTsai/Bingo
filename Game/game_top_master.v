@@ -30,6 +30,7 @@ module Game_Master(
     reg [3:0] cur_state, next_state;
     // reg [24:0] used_number, used_number_next;
     wire [4:0] cur_number = 10*cur_number_BCD[7:4] + cur_number_BCD[3:0];
+    wire clear_sel;
 
     reg start_sel;
     reg start_guess;
@@ -55,6 +56,8 @@ module Game_Master(
             // used_number <= used_number_next;
         end
     end
+
+    assign clear_sel = (cur_state == `GAME_IDLE);
 
     always@* begin
         next_state = cur_state;
@@ -206,6 +209,7 @@ module Game_Master(
         .rst(rst),
         .interboard_rst(interboard_rst),
 
+        .clear_sel(clear_sel),
         .start_sel(start_sel),
         .cur_number_BCD(cur_number_BCD),
         .enter_pulse(enter_pulse),
