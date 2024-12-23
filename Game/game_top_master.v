@@ -143,7 +143,7 @@ module Game_Master(
     end
 
     always@* begin
-        if(cur_state == `GAME_FIN && start_game) begin
+        if(cur_state == `GAME_IDLE) begin
             clear_guess = 1;
         end
         else begin

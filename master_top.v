@@ -164,7 +164,8 @@ module Master_top (
         Game_Master_inst0.start_guess, // 1
         Game_Master_inst0.start_sel, // 1
         Game_Master_inst0.handle_select_inst.cur_state, // 2
-        Game_Master_inst0.handle_guess_inst.cur_state // 2
+        Game_Master_inst0.handle_guess_inst.cur_state, // 2
+        start_game // 1
     );
 
 
