@@ -155,6 +155,17 @@ module Master_top (
     //     inter_ready // 1
     // );
     
+    ila_0 ila_inst(
+        clk,
+        interboard_en, // 1
+        interboard_msg_type, // 3
+        interboard_number, // 5
+        Game_Master_inst0.cur_state, // 4
+        Game_Master_inst0.start_guess, // 1
+        Game_Master_inst0.start_sel, // 1
+        Game_Master_inst0.handle_select_inst.cur_state, // 2
+        Game_Master_inst0.handle_guess_inst.cur_state // 2
+    );
 
 
 endmodule
