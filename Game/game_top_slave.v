@@ -138,7 +138,7 @@ module Game_Slave(
         if(cur_state == `GAME_SEND_START && inter_ready) begin
             start_guess = 1;
         end
-        else if(cur_state == `GAME_WAIT_UPDATE_GUESS && guess_done) begin
+        else if(cur_state == `GAME_P2_GUESS) begin
             start_guess = 1;
         end
         else if(cur_state == `GAME_SEND_SEL && inter_ready) begin

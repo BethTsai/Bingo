@@ -163,7 +163,7 @@ module Slave_top (
         Game_Slave_inst0.guess_done, // 1
         Game_Slave_inst0.start_guess, // 1
         Game_Slave_inst0.handle_guess_inst.cur_state, // 2
-        Game_Slave_inst0.handle_guess_inst.delayed_en, // 1
+		1,
         Game_Slave_inst0.handle_guess_inst.circle // 25
     );
 
