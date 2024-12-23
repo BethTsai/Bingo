@@ -32,7 +32,6 @@ module Display_top (
 	wire [11:0] pixel_window, pixel_block;
 	wire [0:1024-1] pixel_circle;
 	reg [16:0] pixel_addr;
-	wire [11:0] dina;
 	wire draw_window, draw_circle, draw_line, draw_nums, draw_outer_frame;
 	
 	// reg [0:1024-1] mem2 [0:1];
@@ -81,11 +80,11 @@ module Display_top (
 	);
 	
 	// Store bricks_wall
-	blk_mem_gen_0 blk_mem_gen_0_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_bricks));
+	blk_mem_gen_0 blk_mem_gen_0_inst( .clka(clk_25MHz), .dina(0), .wea(0), .addra(pixel_addr), .douta(pixel_bricks));
 	// Store window
-	blk_mem_gen_1 blk_mem_gen_1_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(pixel_addr), .douta(pixel_window));
+	blk_mem_gen_1 blk_mem_gen_1_inst( .clka(clk_25MHz), .dina(0), .wea(0), .addra(pixel_addr), .douta(pixel_window));
 	// Store Circle
-	blk_mem_gen_3 blk_mem_gen_3_inst( .clka(clk_25MHz), .dina(dina), .wea(0), .addra(0), .douta(pixel_circle));
+	blk_mem_gen_3 blk_mem_gen_3_inst( .clka(clk_25MHz), .dina(0), .wea(0), .addra(0), .douta(pixel_circle));
 	
 	assign draw_window = (h_cnt >= 160 && h_cnt < 480) && (v_cnt >= 80 && v_cnt < 400);
 	assign draw_outer_frame = (((h_cnt >= 158 && h_cnt < 160) || (h_cnt >= 480 && h_cnt < 482)) && (v_cnt >= 78 && v_cnt < 402)) ||
