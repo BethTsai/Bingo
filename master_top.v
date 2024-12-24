@@ -23,7 +23,12 @@ module Master_top (
     output wire vsync,
     output wire [3:0] vgaRed,
     output wire [3:0] vgaGreen,
-    output wire [3:0] vgaBlue
+    output wire [3:0] vgaBlue,
+
+    output wire audio_mclk,
+    output wire audio_lrck,
+    output wire audio_sck,
+    output wire audio_sdin
 );
 
     wire start_game;
@@ -129,6 +134,17 @@ module Master_top (
         .interboard_en(interboard_en),
         .interboard_msg_type(interboard_msg_type),
         .interboard_number(interboard_number)
+    );
+
+    Audio_top audio_inst(
+        .clk(clk),
+        .rst(rst),
+        .hit(0),
+        .en_music(1),
+        .audio_mclk(audio_mclk),
+        .audio_lrck(audio_lrck),
+        .audio_sck(audio_sck),
+        .audio_sdin(audio_sdin)
     );
 
     // ila_0 ila_inst(
